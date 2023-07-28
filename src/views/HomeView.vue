@@ -1,16 +1,16 @@
 <template>
   <div class="home">
-    <newRangy></newRangy>
+    <NewRangy></NewRangy>
   </div>
 </template>
 
 <script>
-import newRangy from '@/components/new-rangy.vue'
+import NewRangy from '@/components/newRangy.vue'
 
 export default {
   name: 'HomeView',
   components: {
-    newRangy,
+    NewRangy,
   }
 }
 </script>
