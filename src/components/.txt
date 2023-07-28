@@ -1,0 +1,13 @@
+deleteSelectedText(id) {
+            const index = this.selectedTextIds.indexOf(id);
+            if (index !== -1) {
+                const selectedElement = document.getElementById(id);
+                if (selectedElement) {
+                    const text = selectedElement.innerText;
+                    selectedElement.outerHTML = text;
+                    this.selectedTextIds.splice(index, 1);
+                    this.selectedRanges.splice(index, 1);
+                    this.$delete(this.isTooltipVisible, id);
+                }
+            }
+        },
