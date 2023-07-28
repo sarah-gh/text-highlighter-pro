@@ -6,7 +6,7 @@
 
 ## نصب و راه‌اندازی
 
-1. نصب وابستگی‌ها با استفاده از npm:
+ نصب وابستگی‌ها با استفاده از npm:
 
 
 ## Project setup
@@ -23,28 +23,6 @@ npm run serve
 ```
 npm run build
 ```
-
-2. وارد کردن کامپوننت در پروژه:
-
-   ```javascript
-   import TextEditor from './TextEditor.vue';
-   
-   export default {
-       components: {
-           TextEditor,
-       },
-   };
-   ```
-
-3. استفاده از کامپوننت `TextEditor` در قالب HTML:
-
-   ```html
-   <template>
-       <div>
-           <TextEditor />
-       </div>
-   </template>
-   ```
 
 ## راه‌اندازی کتابخانه‌ها
 
