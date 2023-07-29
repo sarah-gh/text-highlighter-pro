@@ -240,21 +240,12 @@ export default {
                 this.selectedColor = color;
             }
         },
-        getTooltipVisibility(id) {
-            return this.isTooltipVisible[id];
-        },
         toggleTooltip(id) {
             this.$set(this.isTooltipVisible, id, !this.isTooltipVisible[id]);
         },
         getTriggers(id) {
             return this.selectedTextIds.length === 1 && this.selectedTextIds[0] === id ? "hover" : "hover";
-        },
-        checkRangeIntersection(range1, range2) {
-            return (
-                range1.compareBoundaryPoints(range1.END_TO_START, range2) === 1 &&
-                range1.compareBoundaryPoints(range1.START_TO_END, range2) === -1
-            );
-        },
+        }
     },
     mounted() {
         rangy.init();
