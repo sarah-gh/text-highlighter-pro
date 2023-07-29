@@ -1,16 +1,16 @@
 <template>
   <div class="home">
-    <NewRangy></NewRangy>
+    <ColorfulTextEditor></ColorfulTextEditor>
   </div>
 </template>
 
 <script>
-import NewRangy from '@/components/newRangy.vue'
+import ColorfulTextEditor from '@/components/ColorfulTextEditor.vue'
 
 export default {
   name: 'HomeView',
   components: {
-    NewRangy,
+    ColorfulTextEditor,
   }
 }
 </script>
