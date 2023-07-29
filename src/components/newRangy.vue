@@ -19,12 +19,9 @@
                 </div>
             </div>
             <div v-show="!editingText">
-                <div class="d-flex w-50 m-auto justify-content-center align-items-center">
-                    <div class="text-editor selectable" ref="myTextContainer" @mouseup="handleSelection">SELECT ANY PART OF
-                        THE TEXT AND SEE WHAT HAPPENS!</div>
-                    <div v-for="id in selectedTextIds" :key="id">
-                        <!-- کدهای قبلی برای نمایش رنگ‌ها و تگ‌های انتخاب شده -->
-                    </div>
+                <div class="d-flex w-50 m-auto justify-content-center align-items-center container-selectable">
+                    <h4 class="h4 text-editor selectable" ref="myTextContainer" @mouseup="handleSelection">SELECT ANY PART OF
+                        THE TEXT AND SEE WHAT HAPPENS!</h4>
                     <button @click="reset" class="btn reset-button">
                         <svg viewBox="0 0 16 16" width="1.4em" height="1.4em" focusable="false" role="img"
                             aria-label="arrow counterclockwise" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -270,12 +267,15 @@ export default {
     font-size: 24px;
 }
 
-.selectable {
-    width: fit-content;
+.container-selectable {
     border: 1px solid #ccc;
     padding: 10px;
-    cursor: text;
+    .selectable {
+        width: fit-content;
+        cursor: text;
+    }
 }
+
 
 .actions {
     display: flex;
