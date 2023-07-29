@@ -71,6 +71,7 @@ import rangy from "rangy/lib/rangy-core";
 import { BTooltip } from "bootstrap-vue";
 
 export default {
+    name: "ColorfulTextEditor",
     data() {
         return {
             colors: ["rgb(201, 9, 50)", "rgb(186, 194, 78)", "rgb(115, 134, 218)", "rgb(9, 201, 51)"],
@@ -151,6 +152,8 @@ export default {
             this.selectedRanges.push(range);
             this.$set(this.isTooltipVisible, id, true);
             range.surroundContents(tag);
+            const text = tag.innerText
+            tag.innerText = text
         },
 
         generateUniqueId() {
