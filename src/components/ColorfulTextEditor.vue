@@ -2,12 +2,12 @@
     <div>
         <div>
             <div v-show="editingText">
-                <div class="d-flex w-50 m-auto justify-content-center align-items-center">
+                <div class="d-flex w-50 m-auto justify-content-center align-items-center container-selectable">
                     <input v-model="editedText" class="input form-control" ref="editInput">
                     <button class="btn" @click="applyEditedText">
                         <svg viewBox="0 0 16 16" width="1.3em" height="1.3em" focusable="false" role="img"
                             aria-label="check lg" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            class="bi-check-lg mx-4 pointer b-icon bi" data-darkreader-inline-fill=""
+                            class="bi-check-lg mx-2 pointer b-icon bi" data-darkreader-inline-fill=""
                             style="--darkreader-inline-fill: currentColor;">
                             <g>
                                 <path
