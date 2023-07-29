@@ -50,7 +50,7 @@
                 </div>
             </div>
             <div v-for="id in selectedTextIds" :key="id">
-                <b-tooltip custom-class="my-tooltip-class" :target="id" :triggers="getTriggers(id)"
+                <b-tooltip custom-class="my-tooltip-class" :target="id" triggers="click"
                     :show.sync="isTooltipVisible[id]" @shown="shown(id)">
                     <div class="color-selection">
                         <div class="color-option" v-for="color in colors" :key="color"
@@ -98,21 +98,12 @@ export default {
                     const range = selection.getRangeAt(0);
                     const { start: whereSelectionStartsInText, end: whereSelectionEndsInText } = range.getBookmark(this.$refs.myTextContainer);
 
-                    // Remove any existing internal tags within the selected text section
                     this.removeInternalTags(range);
+                    this.surroundSelectedTextWithTags(range);
 
-                    // Surround the selected text with new tags
-                    const tag = document.createElement("span");
-                    tag.setAttribute("class", "selected-text");
-                    const id = `selected-text-${Math.random().toString(36).substring(7)}`;
-                    tag.id = id;
-                    this.selectedTextIds.push(id);
-                    this.selectedRanges.push(range);
-                    this.$set(this.isTooltipVisible, id, true); ///////// isTooltipVisible
-                    range.surroundContents(tag);
                     window.getSelection().removeAllRanges();
                 } catch (error) {
-                    console.log(error);
+                    console.error(error);
                     window.getSelection().removeAllRanges();
                 }
             };
@@ -120,11 +111,11 @@ export default {
             // Execute the selection handler asynchronously to allow the DOM to update
             setTimeout(selectionHandler, 400);
         },
+
         removeInternalTags(range) {
             const containerNode = range.commonAncestorContainer;
             const selectedElements = [];
 
-            // Find all the selected-text spans within the common ancestor container
             const walker = document.createTreeWalker(containerNode, NodeFilter.SHOW_ELEMENT);
             while (walker.nextNode()) {
                 const node = walker.currentNode;
@@ -145,11 +136,27 @@ export default {
 
                 if (!range.equals(elementRange)) {
                     const parent = element.parentNode;
-                    const content = element.firstChild; // Get the first child (text node) of the element
+                    const content = element.firstChild;
                     parent.replaceChild(content, element);
                 }
             }
         },
+
+        surroundSelectedTextWithTags(range) {
+            const tag = document.createElement("span");
+            tag.setAttribute("class", "selected-text");
+            const id = `selected-text-${this.generateUniqueId()}`;
+            tag.id = id;
+            this.selectedTextIds.push(id);
+            this.selectedRanges.push(range);
+            this.$set(this.isTooltipVisible, id, true);
+            range.surroundContents(tag);
+        },
+
+        generateUniqueId() {
+            return Math.random().toString(36).substring(7);
+        },
+
         deleteSelectedText(id) {
             const index = this.selectedTextIds.indexOf(id);
             if (index !== -1) {
@@ -163,6 +170,7 @@ export default {
                 }
             }
         },
+
         reset() {
             for (const id of this.selectedTextIds) {
                 const selectedElement = document.getElementById(id);
@@ -175,48 +183,47 @@ export default {
             this.selectedRanges = [];
             this.isTooltipVisible = {};
         },
+
         changeText() {
             this.editingText = true;
             this.oldText = this.$refs.myTextContainer.innerText;
             this.editingTextContent = this.$refs.myTextContainer.innerHTML;
             this.editedText = this.$refs.myTextContainer.innerText;
         },
+
         applyEditedText() {
             this.editingText = false;
             const editedText = this.editedText.trim();
-            if (editedText == this.oldText) {
+            if (editedText === this.oldText) {
                 this.$refs.myTextContainer.innerHTML = this.editingTextContent;
-                this.editedText = "";
-                return;
-            }
-            if (editedText) {
+            } else if (editedText) {
                 this.$refs.myTextContainer.innerText = editedText;
             }
             this.editedText = "";
         },
+
         changeSelectionColor(color, id) {
             const selectedElement = document.getElementById(id);
             if (selectedElement) {
                 selectedElement.style.backgroundColor = color;
                 this.selectedColor = color;
             }
-            this.shown(0)
+            this.shown(0);
         },
+
         toggleTooltip(id) {
             this.$set(this.isTooltipVisible, id, !this.isTooltipVisible[id]);
         },
-        getTriggers(id) {
-            return "click"
-            // return this.selectedTextIds.length === 1 && this.selectedTextIds[0] === id ? "hover" : "hover";
-        },
+
         shown(id) {
             for (const property in this.isTooltipVisible) {
-                if(property != id) {
-                    this.isTooltipVisible[property] = false
+                if (property !== id) {
+                    this.isTooltipVisible[property] = false;
                 }
             }
-        }
+        },
     },
+
     mounted() {
         rangy.init();
     },
