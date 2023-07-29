@@ -1,7 +1,35 @@
-body {
-  /* user-select: none; */
+.tooltip.b-tooltip {
+  top: -7px !important;
 }
 
-body .selectable{
-  user-select: auto !important;
+.tooltip.b-tooltip .arrow {
+  margin: 0 0.25rem;
+}
+.bs-tooltip-auto[x-placement^=top] .arrow, .bs-tooltip-top .arrow {
+  bottom: -7px;
+}
+.tooltip .arrow {
+  position: absolute;
+  display: block;
+  width: 0.8rem;
+  height: 0.4rem;
+  z-index: 100;
+}
+
+.bs-tooltip-auto[x-placement^="top"] .arrow::before, .bs-tooltip-top .arrow::before {
+  border-top-color: rgb(156, 147, 133);
+}
+
+.tooltip .arrow::before {
+  border-color: transparent;
+}
+.bs-tooltip-auto[x-placement^=top] .arrow:before, .bs-tooltip-top .arrow:before {
+  top: 0;
+  border-width: 0.4rem 0.4rem 0;
+  border-top-color: #000;
+}
+.tooltip .arrow:before {
+  position: absolute;
+  content: "";
+  border-style: solid;
 }

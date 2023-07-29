@@ -5,8 +5,8 @@
                 <div class="d-flex w-50 m-auto justify-content-center align-items-center">
                     <input v-model="editedText" class="input form-control" ref="editInput">
                     <button class="btn" @click="applyEditedText">
-                        <svg viewBox="0 0 16 16" width="1.3em" height="1.3em" focusable="false" role="img" aria-label="check lg"
-                            xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                        <svg viewBox="0 0 16 16" width="1.3em" height="1.3em" focusable="false" role="img"
+                            aria-label="check lg" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                             class="bi-check-lg mx-4 pointer b-icon bi" data-darkreader-inline-fill=""
                             style="--darkreader-inline-fill: currentColor;">
                             <g>
@@ -20,8 +20,8 @@
             </div>
             <div v-show="!editingText">
                 <div class="d-flex w-50 m-auto justify-content-center align-items-center container-selectable">
-                    <h4 class="h4 text-editor selectable" ref="myTextContainer" @mouseup="handleSelection">SELECT ANY PART OF
-                        THE TEXT AND SEE WHAT HAPPENS!</h4>
+                    <h4 class="h4 text-editor selectable" ref="myTextContainer" @mouseup="handleSelection">SELECT ANY PART
+                        OF THE TEXT AND SEE WHAT HAPPENS!</h4>
                     <button @click="reset" class="btn reset-button">
                         <svg viewBox="0 0 16 16" width="1.4em" height="1.4em" focusable="false" role="img"
                             aria-label="arrow counterclockwise" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -51,7 +51,7 @@
             </div>
             <div v-for="id in selectedTextIds" :key="id">
                 <b-tooltip custom-class="my-tooltip-class" :target="id" :triggers="getTriggers(id)"
-                    :show="isTooltipVisible[id]" @update:show="toggleTooltip(id)">
+                    :show.sync="isTooltipVisible[id]" @shown="shown(id)">
                     <div class="color-selection">
                         <div class="color-option" v-for="color in colors" :key="color"
                             :style="{ backgroundColor: color, color: color }" @click="changeSelectionColor(color, id)">
@@ -90,7 +90,6 @@ export default {
                 try {
                     const selection = rangy.getSelection();
                     const text = selection.toString();
-
                     if (text === "") {
                         // No text is selected, do nothing
                         return;
@@ -109,10 +108,12 @@ export default {
                     tag.id = id;
                     this.selectedTextIds.push(id);
                     this.selectedRanges.push(range);
-                    this.$set(this.isTooltipVisible, id, false);
+                    this.$set(this.isTooltipVisible, id, true); ///////// isTooltipVisible
                     range.surroundContents(tag);
+                    window.getSelection().removeAllRanges();
                 } catch (error) {
                     console.log(error);
+                    window.getSelection().removeAllRanges();
                 }
             };
 
@@ -135,41 +136,6 @@ export default {
             if (selectedElements.length === 0) {
                 // No internal selected-text spans found, do nothing
                 return;
-            }
-
-            // Check if the range contains both an open and closed tag
-            if (selectedElements.length >= 2) {
-                const firstElement = selectedElements[0];
-                const lastElement = selectedElements[selectedElements.length - 1];
-
-                if (firstElement !== lastElement) {
-                    // Create a fragment to hold the content of the selected elements
-                    const contentFragment = document.createDocumentFragment();
-                    const selectedContentRange = rangy.createRange();
-                    selectedContentRange.setStartAfter(firstElement);
-                    selectedContentRange.setEndBefore(lastElement);
-                    contentFragment.appendChild(selectedContentRange.cloneContents());
-
-                    // Remove the internal selected-text spans
-                    for (const element of selectedElements) {
-                        const parent = element.parentNode;
-                        parent.removeChild(element);
-                    }
-
-                    // Surround the selected content with new tags
-                    const tag = document.createElement("span");
-                    tag.setAttribute("class", "selected-text");
-                    const id = `selected-text-${Math.random().toString(36).substring(7)}`;
-                    tag.id = id;
-                    this.selectedTextIds.push(id);
-                    this.selectedRanges.push(range);
-                    this.$set(this.isTooltipVisible, id, false);
-                    tag.appendChild(contentFragment);
-
-                    // Insert the new tag back into the DOM
-                    range.insertNode(tag);
-                    return;
-                }
             }
 
             // Remove internal selected-text spans
@@ -215,7 +181,6 @@ export default {
             this.editingTextContent = this.$refs.myTextContainer.innerHTML;
             this.editedText = this.$refs.myTextContainer.innerText;
         },
-
         applyEditedText() {
             this.editingText = false;
             const editedText = this.editedText.trim();
@@ -229,19 +194,27 @@ export default {
             }
             this.editedText = "";
         },
-
         changeSelectionColor(color, id) {
             const selectedElement = document.getElementById(id);
             if (selectedElement) {
                 selectedElement.style.backgroundColor = color;
                 this.selectedColor = color;
             }
+            this.shown(0)
         },
         toggleTooltip(id) {
             this.$set(this.isTooltipVisible, id, !this.isTooltipVisible[id]);
         },
         getTriggers(id) {
-            return this.selectedTextIds.length === 1 && this.selectedTextIds[0] === id ? "hover" : "hover";
+            return "click"
+            // return this.selectedTextIds.length === 1 && this.selectedTextIds[0] === id ? "hover" : "hover";
+        },
+        shown(id) {
+            for (const property in this.isTooltipVisible) {
+                if(property != id) {
+                    this.isTooltipVisible[property] = false
+                }
+            }
         }
     },
     mounted() {
@@ -269,7 +242,8 @@ export default {
 
 .container-selectable {
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 30px 10px;
+
     .selectable {
         width: fit-content;
         cursor: text;
@@ -307,5 +281,6 @@ export default {
     cursor: pointer;
     padding: 4px 5px;
     border-radius: 4px;
-}</style>
+}
+</style>
   
